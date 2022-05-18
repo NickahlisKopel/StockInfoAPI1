@@ -2,71 +2,133 @@ package com.careerdevs.stockinfoapi.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 
-
+@Entity
 public class Overview {
 
-    private String Symbol;
-    private String AssetType;
-    private String Name;
-    @Column(length = 512)
-    private String Description;
-    private String CIK;
-    private String Exchange;
-    private String Currency;
-    private String Country;
-    private String Sector;
-    private String Industry;
-    private String Address;
-    private String FiscalYearEnd;
-    private String LatestQuarter;
-    private String MarketCapitalization;
-    private String EBITDA;
-    private String PERatio;
-    private String PEGRatio;
-    private String BookValue;
-    private String DividendPerShare;
-    private String DividendYield;
-    private String EPS;
-    private String RevenuePerShareTTM;
-    private String ProfitMargin;
-    private String OperatingMarginTTM;
-    private String ReturnOnAssetsTTM;
-    private String ReturnOnEquityTTM;
-    private String RevenueTTM;
-    private String GrossProfitTTM;
-    private String DilutedEPSTTM;
-    private String QuarterlyEarningsGrowthYOY;
-    private String QuarterlyRevenueGrowthYOY;
-    private String AnalystTargetPrice;
-    private String TrailingPE;
-    private String ForwardPE;
-    private String PriceToSalesRatioTTM;
-    private String PriceToBookRatio;
-    private String EVToRevenue;
-    private String EVToEBITDA;
-    private String Beta;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id",nullable = false,unique = true)
+    private long Id;
+
+    @JsonProperty("Symbol")
+    @Column(name = "symbol",nullable = false,unique = true)
+    private String symbol;
+
+    @JsonProperty("AssetType")
+    @Column(name = "asset_type",nullable = false)
+    private String assetType;
+
+    @JsonProperty("Name")
+    @Column(name = "name",nullable = false,unique = true)
+    private String name;
+
+    @JsonProperty("Exchange")
+    @Column(name = "exchange",nullable = false)
+    private String exchange;
+
+    @JsonProperty("Currency")
+    @Column(name = "currency",nullable = false)
+    private String currency;
+
+    @JsonProperty("Country")
+    @Column(name = "country",nullable = false)
+    private String country;
+
+    @JsonProperty("Sector")
+    @Column(name = "sector",nullable = false)
+    private String sector;
+
+    @JsonProperty("Industry")
+    @Column(name = "industry",nullable = false)
+    private String industry;
+
+    @JsonProperty("MarketCapitalization")
+    @Column(name = "market_cap",nullable = false)
+    private long marketCap;
+
     @JsonProperty("52WeekHigh")
-    private String FiftyTwoWeekHigh;
+    @Column(name = "year_high",nullable = false)
+    private float yearHigh;
+
     @JsonProperty("52WeekLow")
-    private String FiftyTwoWeekLow;
-    @JsonProperty("50DayMovingAverage")
-    private String FiftyDayMovingAverage;
-    @JsonProperty("200DayMovingAverage")
-    private String TwoHundredDayMovingAverage;
-    private String SharesOutstanding;
-    private String DividendDate;
-    private String ExDividendDate;
+    @Column(name = "year_low",nullable = false)
+    private float yearLow;
+
+    @JsonProperty("DividendDate")
+    @Column(name = "dividend_date",nullable = false)
+    private String dividendDate;
 
 
+    public long getId() {
+        return Id;
+    }
 
+    public String getSymbol() {
+        return symbol;
+    }
 
+    public String getAssetType() {
+        return assetType;
+    }
 
+    public String getName() {
+        return name;
+    }
 
+    public String getExchange() {
+        return exchange;
+    }
 
+    public String getCurrency() {
+        return currency;
+    }
 
+    public String getCountry() {
+        return country;
+    }
 
+    public String getSector() {
+        return sector;
+    }
 
+    public String getIndustry() {
+        return industry;
+    }
+
+    public long getMarketCap() {
+        return marketCap;
+    }
+
+    public float getYearHigh() {
+        return yearHigh;
+    }
+
+    public float getYearLow() {
+        return yearLow;
+    }
+
+    public String getDividendDate() {
+        return dividendDate;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"symbol\":\"" + symbol + '"' +
+                ", \"assetType\":\"" + assetType + '"' +
+                ", \"name\":\"" + name + '"' +
+                ", \"exchange\":\"" + exchange + '"' +
+                ", \"currency\":\"" + currency + '"' +
+                ", \"country\":\"" + country + '"' +
+                ", \"sector\":\"" + sector + '"' +
+                ", \"industry\":\"" + industry + '"' +
+                ", \"marketCap\":" + marketCap +
+                ", \"yearHigh\":" + yearHigh +
+                ", \"yearLow\":" + yearLow +
+                ", \"dividendDate\":\"" + dividendDate + '"' +
+                '}';
+    }
 
 }

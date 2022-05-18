@@ -1,5 +1,8 @@
 package com.careerdevs.stockinfoapi.repositories;
 
 
-public interface OverviewRepository {
+import com.careerdevs.stockinfoapi.models.Overview;
+import org.springframework.data.repository.CrudRepository;
+
+public interface OverviewRepository extends CrudRepository<Overview, Long> {
 }
