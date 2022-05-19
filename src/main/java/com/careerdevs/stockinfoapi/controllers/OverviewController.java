@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/stocks")
 public class OverviewController {
@@ -113,5 +115,30 @@ public class OverviewController {
 
     }
 
+    //GET ONE FROM SQL
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOverviewById (@PathVariable("id") String id) {
+        try{
+            long uID = Integer.parseInt(id);
+            Optional<Overview> foundOverview = overviewRepository.findById(uID);
+
+            return new ResponseEntity<>(foundOverview, HttpStatus.OK);
+        }catch (Exception e){
+            return ApiErrorHandling.genericApiError(e);
+        }
+    }
+
+    //DELETE ONE FROM SQL
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteOverviewById (@PathVariable("id") String id) {
+        try{
+            long uID = Integer.parseInt(id);
+            Optional<Overview> foundOverview = overviewRepository.findById(uID);
+            overviewRepository.deleteById(uID);
+            return new ResponseEntity<>(foundOverview, HttpStatus.OK);
+        }catch (Exception e){
+            return ApiErrorHandling.genericApiError(e);
+        }
+    }
 
 }
