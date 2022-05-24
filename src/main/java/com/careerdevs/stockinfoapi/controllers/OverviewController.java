@@ -33,16 +33,19 @@ public class OverviewController {
             String url = "https://www.alphavantage.co/query?function=OVERVIEW&symbol=" + symbol + "&apikey=" + apiKey;
             Overview requestData = restTemplate.getForObject(url, Overview.class);
             if(requestData == null){
-                return ApiErrorHandling.customApiError("Did not receive response from AV",
-                        HttpStatus.INTERNAL_SERVER_ERROR);
+                ApiErrorHandling.throwErr(500,"Did not receive response from AV");
 
             } else if(requestData.getSymbol() == null){
-                return ApiErrorHandling.customApiError("Invalid Stock Symbol: " + symbol,
-                        HttpStatus.NOT_FOUND);
+                ApiErrorHandling.throwErr(404,"Invalid Stock Symbol"+symbol);
+
             }
             return ResponseEntity.ok(requestData);
 
-        }catch (Exception e){
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(),e.getStatusCode().value());
+        }
+
+        catch (Exception e){
            return ApiErrorHandling.genericApiError(e);
         }
     }
@@ -56,12 +59,10 @@ public class OverviewController {
             String url = "https://www.alphavantage.co/query?function=OVERVIEW&symbol=" + symbol + "&apikey=" + apiKey;
             Overview requestData = restTemplate.getForObject(url, Overview.class);
             if(requestData == null){
-                return ApiErrorHandling.customApiError("Did not receive response from AV",
-                        HttpStatus.INTERNAL_SERVER_ERROR);
+                ApiErrorHandling.throwErr(500,"Did not receive response from AV");
 
             } else if(requestData.getSymbol() == null){
-                return ApiErrorHandling.customApiError("Invalid Stock Symbol: " + symbol,
-                        HttpStatus.NOT_FOUND);
+                ApiErrorHandling.throwErr(404,"Invalid Stock Symbol: " + symbol);
             }
 
             Overview savedOverview = overviewRepository.save(requestData);
@@ -70,10 +71,12 @@ public class OverviewController {
 
             return ResponseEntity.ok(savedOverview);
 
-        }catch (DataIntegrityViolationException e){
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(),e.getStatusCode().value());
+        } catch (DataIntegrityViolationException e){
             return ApiErrorHandling.customApiError(
                     "Can not upload duplicate Stock data",
-                    HttpStatus.BAD_REQUEST);
+                    404);
 
         } catch (Exception e){
             return ApiErrorHandling.genericApiError(e);
@@ -87,11 +90,13 @@ public class OverviewController {
 
             Iterable<Overview> allOverviews = overviewRepository.findAll();
 
-            return new ResponseEntity<>(allOverviews, HttpStatus.OK);
+            return ResponseEntity.ok(allOverviews);
 
 
 
-        }catch (Exception e){
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(),e.getStatusCode().value());
+        } catch (Exception e){
             return ApiErrorHandling.genericApiError(e);
         }
     }
@@ -102,12 +107,17 @@ public class OverviewController {
         try{
 
             long totalOverviews = overviewRepository.count();
+
+            if(totalOverviews == 0){
+                ApiErrorHandling.throwErr(404,"No Overviews.");
+            }
+
             overviewRepository.deleteAll();
 
             return new ResponseEntity<>("Overviews deleted: " + totalOverviews,HttpStatus.OK);
 
         }catch (HttpClientErrorException e){
-            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode());
+            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode().value());
 
         } catch (Exception e){
             return ApiErrorHandling.genericApiError(e);
@@ -116,27 +126,42 @@ public class OverviewController {
     }
 
     //GET ONE FROM SQL
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<?> getOverviewById (@PathVariable("id") String id) {
         try{
             long uID = Integer.parseInt(id);
             Optional<Overview> foundOverview = overviewRepository.findById(uID);
 
-            return new ResponseEntity<>(foundOverview, HttpStatus.OK);
-        }catch (Exception e){
+            if(foundOverview.isEmpty()){
+                ApiErrorHandling.throwErr(404,id+"did not match any overview");
+            }
+
+            return ResponseEntity.ok(foundOverview);
+        }catch (NumberFormatException e){
+            return ApiErrorHandling.customApiError("ID Must be a number.",404);
+        } catch (Exception e){
             return ApiErrorHandling.genericApiError(e);
         }
     }
 
     //DELETE ONE FROM SQL
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/id/{id}")
     public ResponseEntity<?> deleteOverviewById (@PathVariable("id") String id) {
         try{
             long uID = Integer.parseInt(id);
             Optional<Overview> foundOverview = overviewRepository.findById(uID);
+
+            if(foundOverview.isEmpty()){
+                ApiErrorHandling.throwErr(404,id + " did not match any overview");
+            }
+
             overviewRepository.deleteById(uID);
             return new ResponseEntity<>(foundOverview, HttpStatus.OK);
-        }catch (Exception e){
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(),e.getStatusCode().value());
+        } catch(NumberFormatException e){
+            return ApiErrorHandling.customApiError("ID Must be a number: " + id,404);
+        } catch (Exception e){
             return ApiErrorHandling.genericApiError(e);
         }
     }
