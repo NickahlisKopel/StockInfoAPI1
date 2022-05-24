@@ -137,12 +137,37 @@ public class OverviewController {
             }
 
             return ResponseEntity.ok(foundOverview);
-        }catch (NumberFormatException e){
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode().value());
+
+        } catch (NumberFormatException e){
             return ApiErrorHandling.customApiError("ID Must be a number.",404);
         } catch (Exception e){
             return ApiErrorHandling.genericApiError(e);
         }
     }
+
+    @GetMapping("/symbol/{symbol}")
+    public ResponseEntity<?> getOverviewBySymbol (@PathVariable String symbol) {
+        try{
+
+            Overview foundOverview = overviewRepository.findBySymbol(symbol);
+
+            if(foundOverview == null){
+                ApiErrorHandling.throwErr(404,symbol+"did not match any overview");
+            }
+
+            return ResponseEntity.ok(foundOverview);
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode().value());
+
+        } catch (Exception e){
+            return ApiErrorHandling.genericApiError(e);
+        }
+    }
+
+
+
 
     //DELETE ONE FROM SQL
     @DeleteMapping("/id/{id}")
