@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/stocks")
+@RequestMapping("/api/overview")
 public class OverviewController {
 
     @Autowired
@@ -25,7 +25,7 @@ public class OverviewController {
     private OverviewRepository overviewRepository;
 
 
-    @GetMapping("/overview/{symbol}")
+    @GetMapping("{symbol}")
     public ResponseEntity<?> dynamicOverview (RestTemplate restTemplate, @PathVariable("symbol") String symbol) {
 
         try {
@@ -51,7 +51,7 @@ public class OverviewController {
     }
 
 
-    @PostMapping("/overview/{symbol}")
+    @PostMapping("{symbol}")
     public ResponseEntity<?> uploadOverview (RestTemplate restTemplate, @PathVariable("symbol") String symbol) {
 
         try {
@@ -84,7 +84,7 @@ public class OverviewController {
     }
 
     //GET ALL from SQL
-    @GetMapping("/overview/all")
+    @GetMapping("all")
     public ResponseEntity<?> getAllOverviews (){
         try{
 
@@ -102,7 +102,7 @@ public class OverviewController {
     }
 
     //DELETE ALL FROM SQL
-    @DeleteMapping("/overview/deleteall")
+    @DeleteMapping("deleteall")
     public ResponseEntity<?> deleteAllOverviews (){
         try{
 
