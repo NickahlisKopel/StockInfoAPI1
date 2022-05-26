@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -146,12 +147,13 @@ public class OverviewController {
             return ApiErrorHandling.genericApiError(e);
         }
     }
-
+    
+    //GET BY SYMBOL
     @GetMapping("/symbol/{symbol}")
     public ResponseEntity<?> getOverviewBySymbol (@PathVariable String symbol) {
         try{
 
-            Overview foundOverview = overviewRepository.findBySymbol(symbol);
+            Optional<Overview> foundOverview = overviewRepository.findBySymbol(symbol);
 
             if(foundOverview == null){
                 ApiErrorHandling.throwErr(404,symbol+"did not match any overview");
@@ -165,6 +167,136 @@ public class OverviewController {
             return ApiErrorHandling.genericApiError(e);
         }
     }
+
+
+    //GET BY EXCHANGE
+    @GetMapping("/exchange/{exchange}")
+    public ResponseEntity<?> getOverviewByExchange (@PathVariable String exchange) {
+        try{
+
+            List<Overview> foundOverview = overviewRepository.findByExchange(exchange);
+
+            if(foundOverview == null){
+                ApiErrorHandling.throwErr(404,exchange+"did not match any overview");
+            }
+
+            return ResponseEntity.ok(foundOverview);
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode().value());
+
+        } catch (Exception e){
+            return ApiErrorHandling.genericApiError(e);
+        }
+    }
+
+    //GET BY ASSET TYPE
+    @GetMapping("/assetType/{assetType}")
+    public ResponseEntity<?> getOverviewByAssetType (@PathVariable String assetType) {
+        try{
+
+            List<Overview> foundOverview = overviewRepository.findByAssetType(assetType);
+
+            if(foundOverview == null){
+                ApiErrorHandling.throwErr(404,assetType+"did not match any overview");
+            }
+
+            return ResponseEntity.ok(foundOverview);
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode().value());
+
+        } catch (Exception e){
+            return ApiErrorHandling.genericApiError(e);
+        }
+    }
+
+
+    //GET BY NAME
+    @GetMapping("/name/{name}")
+    public ResponseEntity<?> getOverviewByName (@PathVariable String name) {
+        try{
+
+            Optional<Overview> foundOverview = overviewRepository.findByName(name);
+
+            if(foundOverview == null){
+                ApiErrorHandling.throwErr(404,name+"did not match any overview");
+            }
+
+            return ResponseEntity.ok(foundOverview);
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode().value());
+
+        } catch (Exception e){
+            return ApiErrorHandling.genericApiError(e);
+        }
+    }
+
+
+    //GET BY CURRENCY
+    @GetMapping("/currency/{currency}")
+    public ResponseEntity<?> getOverviewByCurrency (@PathVariable String currency) {
+        try{
+
+            List<Overview> foundOverview = overviewRepository.findByCurrency(currency);
+
+            if(foundOverview == null){
+                ApiErrorHandling.throwErr(404,currency+"did not match any overview");
+            }
+
+            return ResponseEntity.ok(foundOverview);
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode().value());
+
+        } catch (Exception e){
+            return ApiErrorHandling.genericApiError(e);
+        }
+    }
+
+    //GET BY COUNTRY
+    @GetMapping("/country/{country}")
+    public ResponseEntity<?> getOverviewByCountry (@PathVariable String country) {
+        try{
+
+            List<Overview> foundOverview = overviewRepository.findByCountry(country);
+
+            if(foundOverview == null){
+                ApiErrorHandling.throwErr(404,country+"did not match any overview");
+            }
+
+            return ResponseEntity.ok(foundOverview);
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode().value());
+
+        } catch (Exception e){
+            return ApiErrorHandling.genericApiError(e);
+        }
+    }
+
+
+
+
+    //GET BY SECTOR
+    @GetMapping("/sector/{sector}")
+    public ResponseEntity<?> getOverviewBySector (@PathVariable String sector) {
+        try{
+
+            List<Overview> foundOverview = overviewRepository.findBySector(sector);
+
+            if(foundOverview == null){
+                ApiErrorHandling.throwErr(404,sector+"did not match any overview");
+            }
+
+            return ResponseEntity.ok(foundOverview);
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode().value());
+
+        } catch (Exception e){
+            return ApiErrorHandling.genericApiError(e);
+        }
+    }
+
+
+
+
 
 
 
